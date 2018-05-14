@@ -1,0 +1,72 @@
+from tkinter import *
+import tkinter.font
+from gpiozero import LED
+import RPi.GPIO
+RPi.GPIO.setmode(RPi.GPIO.BCM)
+
+## hardware
+led = LED(17)
+led2 = LED(18)
+led3 = LED(27)
+## GUI Definitions ##
+win = Tk()
+win.title("Led Toggler")
+myFont = tkinter.font.Font(family = 'Helvetica', size = 12, weight = "bold")
+
+## event FUNCTIONS ##
+def ledToggle():
+    if led.is_lit:
+        led.off()
+        ledButton["text"] = "Turn Blue LED on"
+    else:
+        led.on()
+        led2.off()
+        led3.off()
+        ledButton["text"] = "Turn Blue LED off"
+        led3Button["text"] = "Turn Red LED on"
+        led2Button["text"] = "Turn Green LED on"
+        
+
+def led2Toggle():
+    if led2.is_lit:
+        led2.off()
+        led2Button["text"] = "Turn Green LED on"
+    else:
+        led2.on()
+        led.off()
+        led3.off()
+        led3Button["text"] = "Turn Red LED on"
+        ledButton["text"] = "Trun Blue LED on"
+        led2Button["text"] = "Turn Green LED off"
+        
+def led3Toggle():
+    if led3.is_lit:
+        led3.off()
+        led3Button["text"] = "Turn Red LED on"
+    else:
+        led3.on()
+        led2.off()
+        led.off()
+        led3Button["text"] = "Turn Red LED off"
+        ledButton["text"] = "Trun Blue LED on"
+        led2Button["text"] = "Turn Green LED on"
+
+def close():
+    RPi.GPIO.cleanup()
+    win.destroy()
+    
+## widgets ##
+ledButton = Button(win, text = 'Turn Blue LED on', font = myFont, command = ledToggle, bg = 'bisque2', height = 1, width = 24)
+ledButton.grid(row=0,column=1)
+
+led2Button = Button(win, text = 'Turn Green LED on', font = myFont, command = led2Toggle, bg = 'bisque2', height = 1, width = 24)
+led2Button.grid(row=1,column=1)
+
+led3Button = Button(win, text = 'Turn Red LED on', font = myFont, command = led3Toggle, bg = 'bisque2', height = 1, width = 24)
+led3Button.grid(row=2,column=1)
+
+exitButton = Button(win, text = 'Exit', font = myFont, command = close, bg = 'red', height = 1, width = 6)
+exitButton.grid(row=3,column=1)
+
+win.protocol("WM_DELETE_WINDOW",close) #exit cleanly
+win.mainloop() #loop forever
